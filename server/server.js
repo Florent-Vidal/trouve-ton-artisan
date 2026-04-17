@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { Sequelize } = require("sequelize");
+const { Sequelize } = require("../config/database");
+const sequelize = require("../config/database");
 
 const app = express();
 
@@ -14,16 +15,6 @@ app.use(
 );
 
 app.use(express.json());
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: "mysql",
-  },
-);
 
 sequelize
   .authenticate()
