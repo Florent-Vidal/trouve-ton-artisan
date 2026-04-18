@@ -6,10 +6,19 @@ const categorieRoutes = require("./routes/categorieRoutes");
 const specialiteRoutes = require("./routes/specialiteRoutes");
 const artisanRoutes = require("./routes/artisanRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: { error: "Trop de requêtes, réessayez plus tard." },
+});
+
+app.use(limiter);
 
 app.use(
   cors({

@@ -1,6 +1,7 @@
 const { Artisan } = require("../models");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
+const xss = require("xss");
 
 const getTopArtisans = async (req, res) => {
   try {
@@ -59,7 +60,9 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendContactEmail = async (req, res) => {
-  const { nom, email, message } = req.body;
+  const nom = xss(req.body.nom);
+  const email = xss(req.body.email);
+  const message = xss(req.body.message);
   try {
     await transporter.sendMail({
       from: email,
