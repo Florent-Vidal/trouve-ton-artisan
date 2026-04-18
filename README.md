@@ -71,6 +71,8 @@ Le body du POST `/api/contact` attend :
 
 ## Structure du projet
 
+Architecture MVC (Modèle - Vue - Controller)
+
 ```
 trouve-ton-artisan/
 ├── server/
