@@ -1,4 +1,4 @@
-const { Artisan } = require("../models/");
+const { Artisan } = require("../models");
 const { Op } = require("sequelize");
 
 const getTopArtisans = async (req, res) => {

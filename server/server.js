@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { Sequelize } = require("../config/database");
-const sequelize = require("../config/database");
+const sequelize = require("./config/database");
+const categorieRoutes = require("./routes/categorieRoutes");
+const specialiteRoutes = require("./routes/specialiteRoutes");
+const artisanRoutes = require("./routes/artisanRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -15,6 +18,11 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use("/api/categories", categorieRoutes);
+app.use("/api/categories", specialiteRoutes);
+app.use("/api/artisans", artisanRoutes);
+app.use("/api/contact", contactRoutes);
 
 sequelize
   .authenticate()
