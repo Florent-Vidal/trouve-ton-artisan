@@ -1,5 +1,7 @@
 const { Artisan } = require("../models");
 const { Op } = require("sequelize");
+const nodemailer = require("nodemailer");
+const xss = require("xss");
 
 const getTopArtisans = async (req, res) => {
   try {
@@ -48,10 +50,26 @@ const searchArtisans = async (req, res) => {
   }
 };
 
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
+
 const sendContactEmail = async (req, res) => {
-  const { nom, email, message } = req.body;
+  const nom = xss(req.body.nom);
+  const email = xss(req.body.email);
+  const message = xss(req.body.message);
   try {
-    // Logic to send email (e.g., using nodemailer)
+    await transporter.sendMail({
+      from: email,
+      to: "contact@trouve-ton-artisan.fr",
+      subject: `Message de ${nom}`,
+      text: message,
+    });
     res.json({ success: true, message: "Email sent successfully." });
   } catch (error) {
     console.error("Error sending contact email:", error);
