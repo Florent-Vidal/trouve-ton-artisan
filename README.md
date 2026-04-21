@@ -1,7 +1,6 @@
 # Trouve Ton Artisan — Back-End
 
-API REST pour la recherche d'artisans en Auvergne-Rhône-Alpes. 
-Cette API permet aux utilisateurs de rechercher des artisans par catégorie, spécialité ou nom, de consulter leur fiche détaillée et de les contacter par email.
+ Cette API permet aux utilisateurs de rechercher des artisans par catégorie, spécialité ou nom, de consulter leur fiche détaillée et de les contacter par email.
 
 ## Stack technique
 
