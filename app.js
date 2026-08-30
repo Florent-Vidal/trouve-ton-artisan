@@ -17,15 +17,17 @@ app.use(limiteurGeneral);
 
 // CORS restreint aux origines connues : aucun autre site ne peut appeler
 // l'API depuis un navigateur.
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://trouve-ton-artisan-liart.vercel.app",
-      "https://my-project-pi-neon.vercel.app",
-    ],
-  }),
-);
+//
+// La liste est lue dans CORS_ORIGINS (valeurs séparées par des virgules)
+// plutôt que codée en dur : l'URL du front change à chaque nouveau projet
+// Vercel, et une origine oubliée ici bloquerait toute l'application côté
+// navigateur sans erreur serveur visible. Le repli couvre le développement.
+const originesAutorisees = (process.env.CORS_ORIGINS || "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(cors({ origin: originesAutorisees }));
 
 app.use(express.json());
 app.use(apiKeyAuth);
