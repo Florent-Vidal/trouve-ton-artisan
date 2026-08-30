@@ -19,7 +19,7 @@
     text-align: center;
     padding: 3rem;
     font-size: 1rem;
-    color: #9ca3af;
+    color: #595959;
   }
   &__error {
     color: #cd2c2e;
@@ -87,13 +87,13 @@
 
   &__ville {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #fff;
     margin: 0;
   }
 
   &__site {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #fff;
     text-decoration: none;
     &:hover {
       color: #fff;
@@ -191,7 +191,7 @@
       border-color: #fff;
     }
     &::placeholder {
-      color: #9ca3af;
+      color: #595959;
     }
   }
 
@@ -211,7 +211,7 @@
       border-color: #fff;
     }
     &::placeholder {
-      color: #9ca3af;
+      color: #595959;
     }
   }
 

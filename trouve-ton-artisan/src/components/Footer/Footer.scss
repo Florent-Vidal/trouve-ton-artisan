@@ -28,29 +28,32 @@
     line-height: 1.2;
   }
 
+  // Le bloc de marque du pied de page reprend le balisage de l'en-tête, mais
+  // pas son fond : #384050 sur le bleu #0074c7 ne donne que 2,14:1, très
+  // en dessous du seuil AA de 4,5:1. Le blanc plein remonte à 4,86:1.
   &__logo-title {
     font-size: 1rem;
     font-weight: 700;
-    color: #384050;
+    color: #fff;
   }
 
   &__logo-subtitle {
     font-size: 0.6rem;
     font-weight: 600;
-    color: #384050;
+    color: #fff;
   }
 
   &__address {
     font-style: normal;
     font-size: 0.8rem;
     line-height: 1.7;
-    color: rgba(255,255,255,0.9);
+    color: #fff;
     text-align: center;
     @media (min-width: 768px) { text-align: left; }
   }
 
   &__tel {
-    color: rgba(255,255,255,0.9);
+    color: #fff;
     text-decoration: none;
     &:hover { color: #fff; text-decoration: underline; }
   }
@@ -71,7 +74,7 @@
 
   &__nav-link {
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.9);
+    color: #fff;
     text-decoration: none;
     &:hover { color: #fff; text-decoration: underline; }
   }
@@ -85,7 +88,9 @@
   &__copyright {
     text-align: center;
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.8);
+    // Blanc à 80 % = 3,66:1. La mention légale reste du texte à part entière,
+    // le seuil de 4,5:1 s'applique : blanc plein.
+    color: #fff;
     margin: 0;
   }
 }

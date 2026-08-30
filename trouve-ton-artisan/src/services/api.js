@@ -10,7 +10,22 @@ async function apiFetch(endpoint, options = {}) {
     },
     ...options,
   });
-  if (!response.ok) throw new Error("Erreur " + response.status);
+  if (!response.ok) {
+    // L'API renvoie un message explicite : quota d'envois dépassé, champ
+    // invalide, artisan introuvable. Le jeter ici obligerait l'interface à
+    // afficher « une erreur est survenue » là où le serveur savait dire quoi.
+    let corps = null;
+    try {
+      corps = await response.json();
+    } catch {
+      // Réponse sans corps JSON (502 d'un proxy, coupure réseau) : on garde
+      // le code HTTP comme seule information disponible.
+    }
+    const erreur = new Error(corps?.message || "Erreur " + response.status);
+    erreur.statut = response.status;
+    erreur.details = corps?.details || null;
+    throw erreur;
+  }
   return response.json();
 }
 

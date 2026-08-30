@@ -26,6 +26,13 @@ const limiteurContact = rateLimit({
   limit: 5, // 5 messages par IP et par heure
   standardHeaders: "draft-7",
   legacyHeaders: false,
+  // Seuls les envois réussis sont décomptés. Le jeu d'essai a montré que sans
+  // cette option, cinq saisies invalides d'affilée (un email mal tapé, un
+  // message trop long) épuisaient le quota et bloquaient une heure un visiteur
+  // qui n'avait encore rien envoyé. Le risque est couvert par ailleurs : une
+  // requête rejetée n'envoie aucun email, et le limiteur général (100 requêtes
+  // par quart d'heure) reste opposable à un client qui inonderait la route.
+  skipFailedRequests: true,
   message: {
     message:
       "Vous avez envoyé trop de messages. Réessayez dans une heure.",

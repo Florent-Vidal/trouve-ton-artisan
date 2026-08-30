@@ -3,6 +3,11 @@
 -- Région Auvergne-Rhône-Alpes
 -- ============================================================
 
+-- Le fichier est encodé en UTF-8 : sans cette instruction, un client MySQL
+-- configuré en latin1 (cas par défaut sur plusieurs distributions) réencode
+-- les accents à l'insertion et « Bâtiment » est stocké « BÃ¢timent ».
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS trouve_ton_artisan
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;

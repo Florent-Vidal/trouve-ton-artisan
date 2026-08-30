@@ -35,6 +35,8 @@ function ArtisanDetail() {
     message: "",
   });
   const [formStatus, setFormStatus] = useState(null);
+  // Message d'erreur renvoyé par l'API, affiché tel quel au visiteur.
+  const [formErreur, setFormErreur] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
@@ -61,12 +63,18 @@ function ArtisanDetail() {
     e.preventDefault();
     setFormLoading(true);
     setFormStatus(null);
+    setFormErreur(null);
     try {
       await sendContactForm(id, form);
       setFormStatus("success");
       setForm({ nom: "", email: "", objet: "", message: "" });
-    } catch {
+    } catch (erreur) {
       setFormStatus("error");
+      // Le middleware de validation renvoie un tableau `details` : autant
+      // l'afficher, le visiteur sait alors quel champ reprendre.
+      setFormErreur(
+        erreur.details?.length ? erreur.details.join(" ") : erreur.message
+      );
     } finally {
       setFormLoading(false);
     }
@@ -201,7 +209,7 @@ function ArtisanDetail() {
                   role="alert"
                   aria-live="assertive"
                 >
-                  Une erreur est survenue. Réessayez.
+                  {formErreur || "Une erreur est survenue. Réessayez."}
                 </p>
               )}
               <button

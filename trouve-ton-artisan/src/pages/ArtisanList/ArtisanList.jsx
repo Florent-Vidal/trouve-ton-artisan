@@ -34,33 +34,61 @@ function ArtisanList() {
 
   const [artisans, setArtisans] = useState([]);
   const [categorie, setCategorie] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Identifiant de la vue dont les données sont actuellement à l'écran.
+  const [cleAffichee, setCleAffichee] = useState(null);
+  const cle = isSearch ? "q:" + searchQuery : "c:" + slug;
+
+  // « En cours de chargement » n'est pas un état à conserver : c'est le constat
+  // que les données affichées ne correspondent pas encore à l'URL demandée. Le
+  // déduire évite un setState synchrone dans l'effet (cascade de rendus
+  // signalée par ESLint) et rend impossible un écran de chargement qui reste
+  // affiché parce qu'un setLoading(false) a été oublié dans une branche.
+  const loading = cleAffichee !== cle;
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    setCategorie(null);
+    // Une navigation rapide entre deux catégories lance deux requêtes ; sans ce
+    // drapeau, la plus lente écrase la plus récente et l'écran affiche les
+    // artisans de la catégorie précédente.
+    let obsolete = false;
+
+    const appliquer = (listeArtisans, categorieTrouvee, messageErreur) => {
+      if (obsolete) return;
+      setArtisans(listeArtisans);
+      setCategorie(categorieTrouvee);
+      setError(messageErreur);
+      setCleAffichee(cle);
+    };
 
     if (isSearch) {
       searchArtisans(searchQuery)
-        .then((data) => setArtisans(data))
-        .catch(() => setError("Impossible d'effectuer la recherche."))
-        .finally(() => setLoading(false));
+        .then((data) => appliquer(data, null, null))
+        .catch(() =>
+          appliquer([], null, "Impossible d'effectuer la recherche.")
+        );
     } else {
-      fetchCategories()
-        .then((cats) => {
-          const cat = cats.find((c) => c.id === parseInt(slug));
-          setCategorie(cat || null);
-        })
-        .catch(() => {});
-
-      fetchArtisansByCategorie(slug)
-        .then((data) => setArtisans(data))
-        .catch(() => setError("Impossible de charger les artisans."))
-        .finally(() => setLoading(false));
+      Promise.all([
+        // Le nom de la catégorie n'est qu'un habillage du titre : son échec ne
+        // doit pas empêcher l'affichage de la liste.
+        fetchCategories().catch(() => []),
+        fetchArtisansByCategorie(slug),
+      ])
+        .then(([cats, data]) =>
+          appliquer(
+            data,
+            cats.find((c) => c.id === parseInt(slug)) || null,
+            null
+          )
+        )
+        .catch(() =>
+          appliquer([], null, "Impossible de charger les artisans.")
+        );
     }
-  }, [slug, isSearch, searchQuery]);
+
+    return () => {
+      obsolete = true;
+    };
+  }, [slug, isSearch, searchQuery, cle]);
 
   const pageTitle = isSearch
     ? 'Résultats pour "' + searchQuery + '"'
