@@ -1,39 +1,24 @@
-const express = require("express");
-const cors = require("cors");
 require("dotenv").config();
+
+const app = require("./app");
 const { sequelize } = require("./models");
-const artisansRouter = require("./routes/RoutesArtisan");
-const apiKeyAuth = require("./middleware/auth");
-
-const app = express();
-
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://trouve-ton-artisan-liart.vercel.app",
-      "https://my-project-pi-neon.vercel.app",
-    ],
-  }),
-);
-app.use(express.json());
-app.use(apiKeyAuth);
-
-app.use("/api/artisans", artisansRouter);
 
 const PORT = process.env.PORT || 3000;
 
-// Démarrer le serveur immédiatement
+// Le serveur démarre immédiatement : sur Railway, la sonde de santé de la
+// plateforme doit obtenir une réponse rapidement, avant même que la
+// connexion à la base ne soit établie.
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur lancé sur le port ${PORT}`);
+  console.log(`Serveur lancé sur le port ${PORT}`);
 });
 
-// Vérifier la connexion BDD après
+// La connexion à la base est vérifiée ensuite, et son échec est journalisé
+// explicitement plutôt que de rester silencieux.
 sequelize
   .authenticate()
   .then(() => {
-    console.log("✅ Connexion à la base de données réussie !");
+    console.log("Connexion à la base de données réussie.");
   })
   .catch((err) => {
-    console.error("❌ Erreur de connexion :", err.message);
+    console.error("Erreur de connexion à la base de données :", err.message);
   });

@@ -5,6 +5,9 @@ const nodemailer = require("nodemailer");
 const Artisan = require("../models/artisan");
 const Categorie = require("../models/categorie");
 const Specialite = require("../models/specialite");
+const validateContact = require("../middleware/validateContact");
+const { limiteurContact } = require("../middleware/rateLimit");
+const { escapeHtml, escapeHtmlMultiligne } = require("../utils/escapeHtml");
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: parseInt(process.env.MAIL_PORT),
@@ -74,15 +77,12 @@ router.get("/recherche/:nom", async (req, res) => {
 });
 
 // POST /api/artisans/:id/contact
-router.post("/:id/contact", async (req, res) => {
+// Le limiteur s'exécute en premier : inutile de valider ni d'interroger la
+// base pour une requête qui sera de toute façon refusée.
+router.post("/:id/contact", limiteurContact, validateContact, async (req, res) => {
   try {
+    // Champs déjà validés et nettoyés par le middleware validateContact.
     const { nom, email, objet, message } = req.body;
-
-    if (!nom || !email || !objet || !message) {
-      return res
-        .status(400)
-        .json({ message: "Tous les champs sont obligatoires." });
-    }
 
     const artisan = await Artisan.findByPk(req.params.id);
     if (!artisan) {
@@ -90,21 +90,30 @@ router.post("/:id/contact", async (req, res) => {
     }
 
     await transporter.sendMail({
+      // L'expéditeur est une adresse du domaine, contrôlée par le service.
+      // Y mettre l'email du visiteur serait une usurpation d'expéditeur, et
+      // le message serait rejeté par les contrôles SPF et DKIM.
       from: '"Trouve ton Artisan" <' + process.env.MAIL_USER + ">",
       to: artisan.email,
+      // replyTo : un simple « Répondre » écrit directement au visiteur,
+      // sans qu'on ait eu besoin d'usurper son adresse.
+      replyTo: email,
       subject: objet,
+      // Toutes les valeurs venant du visiteur sont échappées avant d'être
+      // insérées dans le HTML : sans cela, une saisie contenant du balisage
+      // serait interprétée par le client de messagerie de l'artisan.
       html:
         "<p><strong>Message de :</strong> " +
-        nom +
+        escapeHtml(nom) +
         " (" +
-        email +
+        escapeHtml(email) +
         ")</p>" +
         "<p><strong>Objet :</strong> " +
-        objet +
+        escapeHtml(objet) +
         "</p>" +
         "<hr/>" +
         "<p>" +
-        message.replace(/\n/g, "<br>") +
+        escapeHtmlMultiligne(message) +
         "</p>",
     });
 

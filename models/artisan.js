@@ -17,6 +17,9 @@ const Artisan = sequelize.define(
       type: DataTypes.DECIMAL(2, 1),
       allowNull: false,
       defaultValue: 0.0,
+      // Une note hors de l'échelle n'a pas de sens : la contrainte vit dans
+      // le modèle plutôt que d'être supposée correcte à l'insertion.
+      validate: { min: 0, max: 5 },
     },
     ville: {
       type: DataTypes.STRING(100),
@@ -33,10 +36,14 @@ const Artisan = sequelize.define(
     email: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      // C'est l'adresse à laquelle le formulaire de contact écrit :
+      // une valeur mal formée rendrait la fonctionnalité inopérante.
+      validate: { isEmail: true },
     },
     site_web: {
       type: DataTypes.STRING(255),
       allowNull: true,
+      validate: { isUrl: true },
     },
     top_artisan: {
       type: DataTypes.TINYINT,
