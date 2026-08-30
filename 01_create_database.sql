@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS artisan (
     note            DECIMAL(2,1)        NOT NULL    DEFAULT 0.0
                                         CHECK (note >= 0 AND note <= 5),
     ville           VARCHAR(100)        NOT NULL,
+    -- Code postal facultatif : toutes les fiches artisan n'en disposent pas.
+    code_postal     VARCHAR(10)         NULL,
     a_propos        TEXT                NULL,
     email           VARCHAR(255)        NOT NULL,
     site_web        VARCHAR(255)        NULL,
