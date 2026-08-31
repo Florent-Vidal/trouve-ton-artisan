@@ -1,6 +1,11 @@
 node_modules/
+
+# Secrets : jamais versionnés
 .env
 .env.*
+# ...sauf le gabarit, qui documente les variables attendues sans leur valeur
+!.env.example
+
 # Fichiers systeme macOS
 .DS_Store
 
