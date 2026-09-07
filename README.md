@@ -15,14 +15,14 @@ institutionnelle de la Région.
 
 ## Fonctionnalités
 
-| Écran | Route | Description |
-| --- | --- | --- |
-| Accueil | `/` | Les quatre étapes du parcours et les trois artisans du mois |
-| Liste | `/categorie/:id` | Les artisans d'une catégorie |
-| Recherche | `/recherche?q=` | Résultats de la recherche par nom |
-| Fiche artisan | `/artisan/:id` | Détail et formulaire de contact |
-| Pages légales | `/mentions-legales`, `/donnees-personnelles`, `/accessibilite`, `/cookies` | Quatre pages servies par un composant unique |
-| 404 | `*` | Toute URL inconnue |
+| Écran         | Route                                                                      | Description                                                 |
+| ------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Accueil       | `/`                                                                        | Les quatre étapes du parcours et les trois artisans du mois |
+| Liste         | `/categorie/:id`                                                           | Les artisans d'une catégorie                                |
+| Recherche     | `/recherche?q=`                                                            | Résultats de la recherche par nom                           |
+| Fiche artisan | `/artisan/:id`                                                             | Détail et formulaire de contact                             |
+| Pages légales | `/mentions-legales`, `/donnees-personnelles`, `/accessibilite`, `/cookies` | Quatre pages servies par un composant unique                |
+| 404           | `*`                                                                        | Toute URL inconnue                                          |
 
 La recherche propose des suggestions à partir de deux caractères, avec un
 anti-rebond de 300 ms et fermeture au clic extérieur.
@@ -54,7 +54,7 @@ seuil AA de 4,5:1 (texte 10,41:1 sur blanc, fil d'Ariane 7,00:1, lien 4,86:1).
 
 **Front-end** — React 19, Vite, React Router 7, Sass (SCSS)
 
-**Back-end** — Node.js 22, Express 5, Sequelize 6, MySQL, Nodemailer
+**Back-end** — Node.js 24, Express 5, Sequelize 6, MySQL, Nodemailer
 
 **Sécurité** — authentification par clé API, `express-rate-limit`, CORS restreint,
 échappement HTML des contenus transmis par email
@@ -65,7 +65,7 @@ seuil AA de 4,5:1 (texte 10,41:1 sur blanc, fil d'Ariane 7,00:1, lien 4,86:1).
 
 ## Prérequis
 
-- Node.js 22 ou supérieur
+- Node.js 24 ou supérieur
 - Un serveur MySQL démarré
 - Un compte SMTP de test (Mailtrap) pour l'envoi d'email en développement
 
@@ -124,20 +124,20 @@ mysql -u root -p < 03_migration_code_postal.sql
 
 ### API — `.env` à la racine
 
-| Variable | Rôle |
-| --- | --- |
-| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Connexion MySQL |
-| `PORT` | Port d'écoute de l'API (3000 par défaut) |
-| `API_KEY` | Clé attendue dans l'en-tête `x-api-key` de chaque requête |
-| `CORS_ORIGINS` | Origines autorisées, séparées par des virgules |
-| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER`, `MAIL_PASS` | Serveur SMTP |
+| Variable                                                  | Rôle                                                      |
+| --------------------------------------------------------- | --------------------------------------------------------- |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Connexion MySQL                                           |
+| `PORT`                                                    | Port d'écoute de l'API (3000 par défaut)                  |
+| `API_KEY`                                                 | Clé attendue dans l'en-tête `x-api-key` de chaque requête |
+| `CORS_ORIGINS`                                            | Origines autorisées, séparées par des virgules            |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER`, `MAIL_PASS`        | Serveur SMTP                                              |
 
 ### Client — `trouve-ton-artisan/.env`
 
-| Variable | Rôle |
-| --- | --- |
+| Variable       | Rôle                                          |
+| -------------- | --------------------------------------------- |
 | `VITE_API_URL` | URL de base de l'API, **terminée par `/api`** |
-| `VITE_API_KEY` | Clé API, identique à `API_KEY` côté serveur |
+| `VITE_API_KEY` | Clé API, identique à `API_KEY` côté serveur   |
 
 Aucun de ces fichiers n'est versionné : `.env.example` documente les clés
 attendues sans en livrer les valeurs.
@@ -152,15 +152,15 @@ attendues sans en livrer les valeurs.
 Toutes les routes sont préfixées par `/api/artisans` et exigent l'en-tête
 `x-api-key`. Sans clé, l'API répond `401` ; avec une clé invalide, `403`.
 
-| Méthode | Route | Description |
-| --- | --- | --- |
-| `GET` | `/categories` | Les catégories, triées alphabétiquement |
-| `GET` | `/top/artisans` | Les trois artisans du mois |
-| `GET` | `/categorie/:id` | Artisans d'une catégorie, via jointure sur la spécialité |
-| `GET` | `/recherche/:nom` | Recherche par correspondance partielle |
-| `GET` | `/:id` | Fiche d'un artisan et sa spécialité |
-| `GET` | `/` | Liste complète |
-| `POST` | `/:id/contact` | Envoi d'un message à l'artisan |
+| Méthode | Route             | Description                                              |
+| ------- | ----------------- | -------------------------------------------------------- |
+| `GET`   | `/categories`     | Les catégories, triées alphabétiquement                  |
+| `GET`   | `/top/artisans`   | Les trois artisans du mois                               |
+| `GET`   | `/categorie/:id`  | Artisans d'une catégorie, via jointure sur la spécialité |
+| `GET`   | `/recherche/:nom` | Recherche par correspondance partielle                   |
+| `GET`   | `/:id`            | Fiche d'un artisan et sa spécialité                      |
+| `GET`   | `/`               | Liste complète                                           |
+| `POST`  | `/:id/contact`    | Envoi d'un message à l'artisan                           |
 
 > Dans `routes/RoutesArtisan.js`, `/recherche/:nom` et `/top/artisans` sont
 > déclarées **avant** `/:id`. Express teste les routes dans l'ordre : sans cette
@@ -246,16 +246,16 @@ son fichier `.jsx`.
 
 ## Sécurité
 
-| Mesure | Mise en œuvre |
-| --- | --- |
-| Authentification | Clé API vérifiée sur chaque requête par un middleware global |
-| Injection SQL | Tous les accès passent par Sequelize, qui transmet les valeurs comme paramètres liés |
-| XSS | Échappement systématique des saisies avant insertion dans le corps HTML de l'email |
-| Validation | Présence, type, format d'email et longueurs maximales, côté serveur |
-| Abus de service | 100 requêtes par IP toutes les 15 min ; 5 messages par heure sur le formulaire |
-| CORS | Origines déclarées en variable d'environnement |
-| Proxy | `trust proxy` réglé pour que la limitation de débit fonctionne derrière un proxy |
-| Secrets | Aucun identifiant dans le code source ; `.env` non versionné |
+| Mesure           | Mise en œuvre                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| Authentification | Clé API vérifiée sur chaque requête par un middleware global                         |
+| Injection SQL    | Tous les accès passent par Sequelize, qui transmet les valeurs comme paramètres liés |
+| XSS              | Échappement systématique des saisies avant insertion dans le corps HTML de l'email   |
+| Validation       | Présence, type, format d'email et longueurs maximales, côté serveur                  |
+| Abus de service  | 100 requêtes par IP toutes les 15 min ; 5 messages par heure sur le formulaire       |
+| CORS             | Origines déclarées en variable d'environnement                                       |
+| Proxy            | `trust proxy` réglé pour que la limitation de débit fonctionne derrière un proxy     |
+| Secrets          | Aucun identifiant dans le code source ; `.env` non versionné                         |
 
 ### Limite assumée
 
@@ -293,21 +293,21 @@ formulaire vide.
 
 ### API
 
-| Script | Effet |
-| --- | --- |
-| `npm start` | Démarre l'API |
-| `npm run dev` | Démarre l'API avec rechargement automatique (nodemon) |
-| `npm test` | Suite de tests complète |
-| `npm run test:unit` | Tests unitaires uniquement |
+| Script              | Effet                                                 |
+| ------------------- | ----------------------------------------------------- |
+| `npm start`         | Démarre l'API                                         |
+| `npm run dev`       | Démarre l'API avec rechargement automatique (nodemon) |
+| `npm test`          | Suite de tests complète                               |
+| `npm run test:unit` | Tests unitaires uniquement                            |
 
 ### Client
 
-| Script | Effet |
-| --- | --- |
-| `npm run dev` | Serveur de développement Vite |
-| `npm run build` | Build de production |
-| `npm run preview` | Prévisualise le build |
-| `npm run lint` | ESLint |
+| Script            | Effet                         |
+| ----------------- | ----------------------------- |
+| `npm run dev`     | Serveur de développement Vite |
+| `npm run build`   | Build de production           |
+| `npm run preview` | Prévisualise le build         |
+| `npm run lint`    | ESLint                        |
 
 ---
 
